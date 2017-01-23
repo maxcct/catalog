@@ -54,6 +54,8 @@ def edit_menu_item(restaurant_id, menu_id):
 			item_to_edit.description = request.form['description']
 		if request.form['price'] != item_to_edit.price:
 			item_to_edit.price = request.form['price']
+		if request.form['course'] != item_to_edit.course:
+			item_to_edit.course = request.form['course']
 		session.add(item_to_edit)
 		session.commit()		
 		flash("Menu item successfully edited!")

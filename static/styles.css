@@ -1,3 +1,16 @@
+@media only screen and (max-width: 600px) {
+    textarea {
+    	max-width: 200px;
+    	height: 200px;
+    }
+    input {
+    	max-width: 200px;
+    }
+    .edit-delete {
+    	margin-top: 10px;
+    }
+}
+
 body {
 	background-color: black;
 	font-family: Lato;
@@ -63,7 +76,7 @@ label > p {
 	font-size: 1.3em;
 }
 
-input {
+input, textarea {
 	background-color: #cfdff9;
 	border-radius: 10px;
 	padding: 10px 8px 8px 12px;
@@ -71,8 +84,17 @@ input {
 	font-weight: bold;
 }
 
+textarea {
+	width: 500px;
+	height: 100px;
+}
+
 a:visited {
     border-color: white;
+}
+
+a:hover {
+	background-color: silver;
 }
 
 #r-name {

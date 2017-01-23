@@ -13,7 +13,7 @@
 			<label>
 				<p>D E S C R I P T I O N</p>
 				<br>
-				<input type='text' size='80' name='description' value='{{item.description}}'>
+				<textarea name='description'>{{item.description}}</textarea>
 			</label>
 			<br>
 			<label>
@@ -21,11 +21,37 @@
 				<br>
 				<input type='text' size='5' name='price' value='{{item.price}}'>
 				<br>
-				<div class='confirm-cancel'>
-					<input class='button' type='submit' value='C O N F I R M'>
-					<a class='button' id='cancel' href="{{url_for('restaurant_menu', restaurant_id=item.restaurant_id)}}">C A N C E L</a>
-				</div>
-			</label>			
+			</label>
+			<br>
+			<p id='label'>C O U R S E</p>
+			{% if item.course == 'Starter' %}
+				<label><input type="radio" name="course" value="Starter" checked="checked">S T A R T E R</label>
+			{% else %}
+				<label><input type="radio" name="course" value="Starter">S T A R T E R</label>
+			{% endif %}
+			<br><br>
+			{% if item.course == 'Main Course' %}
+				<label><input type="radio" name="course" value="Main Course" checked="checked">M A I N</label>
+			{% else %}
+				<label><input type="radio" name="course" value="Main Course">M A I N</label>
+			{% endif %}
+			<br><br>
+			{% if item.course == 'Dessert' %}
+				<label><input type="radio" name="course" value="Dessert" checked="checked">D E S S E R T</label>
+			{% else %}
+				<label><input type="radio" name="course" value="Dessert">D E S S E R T</label>
+			{% endif %}
+			<br><br>
+			{% if item.course == 'Drink' %}
+				<label><input type="radio" name="course" value="Drink" checked="checked">D R I N K</label>
+			{% else %}
+				<label><input type="radio" name="course" value="Drink">D R I N K</label>
+			{% endif %}
+			<br><br><br>
+			<div class='confirm-cancel'>
+				<input class='button' type='submit' value='C O N F I R M'>
+				<a class='button' id='cancel' href="{{url_for('restaurant_menu', restaurant_id=item.restaurant_id)}}">C A N C E L</a>
+			</div>				
 		</form>
 		<br><br>
 		
