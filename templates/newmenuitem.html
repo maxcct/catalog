@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+
+		<h1>New Menu Item</h1>
+
+		<form action="{{url_for('new_menu_item', restaurant_id=restaurant_id)}}" method='POST'>
+			<label>
+				<p>NAME</p>
+				<br>
+				<input type='text' size='30' name='name'>
+			</label>
+			<br>
+			<label>
+				<p>DESCRIPTION</p>
+				<br>
+				<input type='text' size='80' name='description'>
+			</label>
+			<br>
+			<label>
+				<p>PRICE</p>
+				<br>
+				<input type='text' size='5' name='price'>
+				<br>
+				<div class='confirm-cancel'>
+					<input class='button' type='submit' value='C R E A T E'>
+					<a class='button' id='cancel' href="{{url_for('restaurant_menu', restaurant_id=restaurant_id)}}">C A N C E L</a>
+				</div>
+			</label>			
+		</form>
+		<br><br>
+		
+{% endblock %}
