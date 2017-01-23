@@ -20,12 +20,21 @@
 				<p>P R I C E</p>
 				<br>
 				<input type='text' size='5' name='price'>
-				<br>
-				<div class='confirm-cancel'>
-					<input class='button' type='submit' value='C R E A T E'>
-					<a class='button' id='cancel' href="{{url_for('restaurant_menu', restaurant_id=restaurant_id)}}">C A N C E L</a>
-				</div>
-			</label>			
+			</label>
+			<br>			
+			<p id='label'>C O U R S E</p>
+			<label><input type="radio" name="course" value="Starter">S T A R T E R</label>
+			<br><br>
+			<label><input type="radio" name="course" value="Main Course">M A I N</label>
+			<br><br>
+			<label><input type="radio" name="course" value="Dessert">D E S S E R T</label>
+			<br><br>
+			<label><input type="radio" name="course" value="Drink">D R I N K</label>
+			<br><br><br>
+			<div class='confirm-cancel'>
+				<input class='button' type='submit' value='C R E A T E'>
+				<a class='button' id='cancel' href="{{url_for('restaurant_menu', restaurant_id=restaurant_id)}}">C A N C E L</a>
+			</div>
 		</form>
 		<br><br>
 		

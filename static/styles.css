@@ -71,13 +71,14 @@ input {
 	font-weight: bold;
 }
 
-
 a:visited {
     border-color: white;
 }
 
 #r-name {
 	font-size: 150%;
+	margin-top: 5px;
+	margin-bottom: 30px;
 }
 
 #create-new {
@@ -117,9 +118,13 @@ a:visited {
 	padding: 8px 6px 4px 6px;
 }
 
-#menu-item-name {
+#item-name {
 	font-weight: bold;
 	font-size: 1.5em;
+}
+
+#item-description {
+	font-style: italic;
 }
 
 .confirm-cancel {
@@ -154,4 +159,20 @@ a:visited {
 
 #home-flash {
 	margin-bottom: 0;
+}
+
+.unavailable {
+	color: white;
+	margin-bottom: 40px;
+}
+
+input[type="radio"] {
+	text-align: initial;
+	display: block;
+    vertical-align: middle;
+    margin: 0 auto 10px;
+}
+
+#label {
+	font-size: 1.3em;
 }

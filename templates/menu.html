@@ -14,19 +14,23 @@
 		<a id='create-new' href="{{url_for('new_menu_item', restaurant_id=restaurant.id)}}"><p>C R E A T E</p><p>N E W</p><p>M E N U</p><p>I T E M</p></a>
 		<hr>
 		<br>
-		{% for i in items %}
-			<div>
-				<p id='menu-item-name'>{{i.name}}</p>
-				<p>{{i.description}}</p>
-				<p> {{i.price}} </p>
-				<div id='inline-buttons'>
-					<a class='edit-delete' href="{{url_for('edit_menu_item', restaurant_id=restaurant.id, menu_id=i.id)}}">EDIT</a>
-					<a class='edit-delete' href="{{url_for('delete_menu_item', restaurant_id=restaurant.id, menu_id=i.id)}}">DELETE</a>
+		{% if items|length > 0 %}
+			{% for i in items %}
+				<div>
+					<p id='item-name'>{{i.name}}</p>
+					<p>{{i.course}}</p>
+					<p id='item-description'>{{i.description}}</p>
+					<p>{{i.price}}</p>
+					<div id='inline-buttons'>
+						<a class='edit-delete' href="{{url_for('edit_menu_item', restaurant_id=restaurant.id, menu_id=i.id)}}">EDIT</a>
+						<a class='edit-delete' href="{{url_for('delete_menu_item', restaurant_id=restaurant.id, menu_id=i.id)}}">DELETE</a>
+					</div>
+					<br>
+					<hr>
+					<br>
 				</div>
-				<br>
-				<hr>
-				<br>
-			</div>
-		{% endfor %}
-		
+			{% endfor %}
+		{% else %}
+			<h2 class='unavailable'>No menu is available for this restaurant!</h2>
+		{% endif %}
 {% endblock %}
