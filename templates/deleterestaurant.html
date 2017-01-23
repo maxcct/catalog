@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+
+		<h1>Are you sure you want to delete {{r.name}}?</h1>
+
+		<form action="{{url_for('delete_restaurant', restaurant_id=r.id)}}" method='post'>
+			<div class='confirm-cancel'>
+				<input class='button' type='submit', value='D E L E T E'>
+				<a class='button' id='cancel' href="/restaurants">C A N C E L</a>
+			</div>
+		</form>
+		
+{% endblock %}

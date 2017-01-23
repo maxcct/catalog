@@ -1,23 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
 
-		<h1>New Menu Item</h1>
+		<h1>NEW MENU ITEM</h1>
 
 		<form action="{{url_for('new_menu_item', restaurant_id=restaurant_id)}}" method='POST'>
 			<label>
-				<p>NAME</p>
+				<p>N A M E</p>
 				<br>
 				<input type='text' size='30' name='name'>
 			</label>
 			<br>
 			<label>
-				<p>DESCRIPTION</p>
+				<p>D E S C R I P T I O N</p>
 				<br>
 				<input type='text' size='80' name='description'>
 			</label>
 			<br>
 			<label>
-				<p>PRICE</p>
+				<p>P R I C E</p>
 				<br>
 				<input type='text' size='5' name='price'>
 				<br>

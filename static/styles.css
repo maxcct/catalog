@@ -13,7 +13,8 @@ body {
 
 h1 {
 	padding-top: 20px;
-	margin-bottom: 20px;
+	margin-bottom: 15px;
+	letter-spacing: 5px;
 }
 
 h2 {
@@ -36,7 +37,7 @@ a {
 	text-align: center;
 	color: #2c3747;
 	font-weight: bold;
-	border: 3px solid;
+	border: 3px outset;
 	border-radius: 10px;
 	max-width: 5em;
 	margin: 0 auto;
@@ -70,12 +71,26 @@ input {
 	font-weight: bold;
 }
 
+
+a:visited {
+    border-color: white;
+}
+
 #r-name {
 	font-size: 150%;
 }
 
 #create-new {
-	max-width: 12em;
+	max-width: 18em;
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+#create-new > p {
+	display: inline;
+	margin: 0 7px;
+	font-size: 0.9em;
+	color: #2c3747;
 }
 
 .edit-delete {
@@ -84,9 +99,22 @@ input {
 	padding: 8px;
 }
 
+.edit-menu-delete {
+	display: inline-block;
+	max-width: 10em;
+	padding: 8px;
+	margin-bottom: 20px;
+}
+
 #inline-buttons {
 	display: flex;
 	margin-top: -20px;
+}
+
+.small-button {
+	font-size: 0.8em;
+	max-height: 1.5em;
+	padding: 8px 6px 4px 6px;
 }
 
 #menu-item-name {
@@ -116,10 +144,14 @@ input {
 	border: 2px solid;
 }
 
-.flash {
+#menu-flash, #home-flash {
 	display: block;
 	text-align: center;
 	color: white;
 	font-weight: bold;
 	margin: 30px 0 -15px 0;
+}
+
+#home-flash {
+	margin-bottom: 0;
 }

@@ -5,13 +5,13 @@
 		{% with messages = get_flashed_messages() %}
 			{% if messages %}
 				{% for message in messages %}
-					<p class='flash'>{{message}}</p>
+					<p id='menu-flash'>{{message}}</p>
 				{% endfor %}
 			{% endif %}
 		{% endwith %}
 		<br>
 		<hr>
-		<h2><a id='create-new' href="{{url_for('new_menu_item', restaurant_id=restaurant.id)}}">Create New Menu Item</a></h2>
+		<a id='create-new' href="{{url_for('new_menu_item', restaurant_id=restaurant.id)}}"><p>C R E A T E</p><p>N E W</p><p>M E N U</p><p>I T E M</p></a>
 		<hr>
 		<br>
 		{% for i in items %}
