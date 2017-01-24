@@ -24,13 +24,13 @@
 			</label>
 			<br>
 			<p id='label'>C O U R S E</p>
-			{% if item.course == 'Starter' %}
+			{% if item.course == 'Starter' or item.course == 'Appetizer' %}
 				<label><input type="radio" name="course" value="Starter" checked="checked">S T A R T E R</label>
 			{% else %}
 				<label><input type="radio" name="course" value="Starter">S T A R T E R</label>
 			{% endif %}
 			<br><br>
-			{% if item.course == 'Main Course' %}
+			{% if item.course == 'Main Course' or item.course == 'Entree' %}
 				<label><input type="radio" name="course" value="Main Course" checked="checked">M A I N</label>
 			{% else %}
 				<label><input type="radio" name="course" value="Main Course">M A I N</label>
@@ -42,7 +42,7 @@
 				<label><input type="radio" name="course" value="Dessert">D E S S E R T</label>
 			{% endif %}
 			<br><br>
-			{% if item.course == 'Drink' %}
+			{% if item.course == 'Drink' or item.course == 'Beverage' %}
 				<label><input type="radio" name="course" value="Drink" checked="checked">D R I N K</label>
 			{% else %}
 				<label><input type="radio" name="course" value="Drink">D R I N K</label>

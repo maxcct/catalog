@@ -35,7 +35,7 @@ h2 {
 	
 }
 
-h1, p {
+h1, h3, p {
 	text-align: center;
 	color: #cfdff9;
 }
@@ -97,10 +97,18 @@ a:hover {
 	background-color: silver;
 }
 
-#r-name {
-	font-size: 150%;
+h3 {
+	font-size: 1.2em;
 	margin-top: 5px;
 	margin-bottom: 30px;
+	letter-spacing: 4px;
+}
+
+input[type="radio"] {
+	text-align: initial;
+	display: block;
+    vertical-align: middle;
+    margin: 0 auto 10px;
 }
 
 #create-new {
@@ -146,7 +154,7 @@ a:hover {
 }
 
 #item-description {
-	font-style: italic;
+	font-size: 0.9em;
 }
 
 .confirm-cancel {
@@ -188,13 +196,23 @@ a:hover {
 	margin-bottom: 40px;
 }
 
-input[type="radio"] {
-	text-align: initial;
-	display: block;
-    vertical-align: middle;
-    margin: 0 auto 10px;
-}
-
 #label {
 	font-size: 1.3em;
+}
+
+.course {
+	color: #cfdff9;
+	letter-spacing: 5px;
+	padding-top: 0.83em;
+	padding-bottom: 0.83em;
+	margin: 0 auto;
+	background-color: #22509b;
+}
+
+#course-hr {
+	margin: 0;
+}
+
+.expand-text {
+	padding-top: 10px;
 }

@@ -17,7 +17,9 @@
 		{% if restaurants|length > 0 %}
 			{% for r in restaurants %}
 				<div class='expand-text'>
-					<p id="r-name">{{r.name}}</p>
+					{% filter upper %}
+						<h3>{{r.name}}</h3>
+					{% endfilter %}
 					<br>
 					<div id='inline-buttons'>
 						<a class='edit-menu-delete small-button' href="{{url_for('edit_restaurant', restaurant_id=r.id)}}">E D I T</a>

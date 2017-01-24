@@ -23,7 +23,13 @@ def restaurants():
 def restaurant_menu(restaurant_id):
 	restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
 	items = session.query(MenuItem).filter_by(restaurant_id=restaurant.id).all()
-	return render_template('menu.html', restaurant=restaurant, items=items)
+	starters = [i for i in items if i.course == 'Starter' or i.course == 'Appetizer']
+	mains = [i for i in items if i.course == 'Main' or i.course == 'Entree']
+	desserts = [i for i in items if i.course == 'Dessert']
+	drinks = [i for i in items if i.course == 'Drink' or i.course == 'Beverage']
+	return render_template('menu.html', restaurant=restaurant, items=items,
+						   starters=starters, mains=mains, desserts=desserts,
+						   drinks=drinks)
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/new/', methods=['GET', 'POST'])

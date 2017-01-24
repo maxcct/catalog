@@ -1,24 +1,77 @@
 {% extends "base.html" %}
 {% block content %}
-
+	{% filter upper %}
 		<h1>{{restaurant.name}}</h1>
-		{% with messages = get_flashed_messages() %}
-			{% if messages %}
-				{% for message in messages %}
-					<p id='menu-flash'>{{message}}</p>
-				{% endfor %}
-			{% endif %}
-		{% endwith %}
-		<br>
-		<hr>
-		<a id='create-new' href="{{url_for('new_menu_item', restaurant_id=restaurant.id)}}"><p>C R E A T E</p><p>N E W</p><p>M E N U</p><p>I T E M</p></a>
-		<hr>
-		<br>
-		{% if items|length > 0 %}
-			{% for i in items %}
+	{% endfilter %}
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			{% for message in messages %}
+				<p id='menu-flash'>{{message}}</p>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+	<br>
+	<hr>
+	<a id='create-new' href="{{url_for('new_menu_item', restaurant_id=restaurant.id)}}"><p>C R E A T E</p><p>N E W</p><p>M E N U</p><p>I T E M</p></a>
+	<hr id='course-hr'>
+	{% if items|length > 0 %}
+		{% if starters|length > 0 %}
+			<h2 class='course'>STARTERS</h2>
+			<hr id='course-hr'>
+			{% for i in starters %}
 				<div class='expand-text'>
 					<p id='item-name'>{{i.name}}</p>
-					<p>{{i.course}}</p>
+					<p id='item-description'>{{i.description}}</p>
+					<p>{{i.price}}</p>
+					<div id='inline-buttons'>
+						<a class='edit-delete' href="{{url_for('edit_menu_item', restaurant_id=restaurant.id, menu_id=i.id)}}">EDIT</a>
+						<a class='edit-delete' href="{{url_for('delete_menu_item', restaurant_id=restaurant.id, menu_id=i.id)}}">DELETE</a>
+					</div>
+					<br>
+					<hr id='course-hr'>
+				</div>
+			{% endfor %}
+		{% endif %}
+		{% if mains|length > 0 %}
+			<h2 class='course'>MAIN COURSES</h2>
+			<hr id='course-hr'>
+			{% for i in mains %}
+				<div class='expand-text'>
+					<p id='item-name'>{{i.name}}</p>
+					<p id='item-description'>{{i.description}}</p>
+					<p>{{i.price}}</p>
+					<div id='inline-buttons'>
+						<a class='edit-delete' href="{{url_for('edit_menu_item', restaurant_id=restaurant.id, menu_id=i.id)}}">EDIT</a>
+						<a class='edit-delete' href="{{url_for('delete_menu_item', restaurant_id=restaurant.id, menu_id=i.id)}}">DELETE</a>
+					</div>
+					<br>
+					<hr id='course-hr'>
+				</div>	
+			{% endfor %}
+		{% endif %}
+		{% if desserts|length > 0 %}
+			<h2 class='course'>DESSERTS</h2>
+			<hr id='course-hr'>
+			{% for i in desserts %}
+				<div class='expand-text'>
+					<p id='item-name'>{{i.name}}</p>
+					<p id='item-description'>{{i.description}}</p>
+					<p>{{i.price}}</p>
+					<div id='inline-buttons'>
+						<a class='edit-delete' href="{{url_for('edit_menu_item', restaurant_id=restaurant.id, menu_id=i.id)}}">EDIT</a>
+						<a class='edit-delete' href="{{url_for('delete_menu_item', restaurant_id=restaurant.id, menu_id=i.id)}}">DELETE</a>
+					</div>
+					<br>
+					<hr id='course-hr'>
+				</div>
+			{% endfor %}
+		{% endif %}
+		{% if drinks|length > 0 %}
+			<h2 class='course'>DRINKS</h2>
+			<hr id='course-hr'>
+			{% for i in drinks %}
+				<div class='expand-text'>
+					<p id='item-name'>{{i.name}}</p>
 					<p id='item-description'>{{i.description}}</p>
 					<p>{{i.price}}</p>
 					<div id='inline-buttons'>
@@ -27,12 +80,12 @@
 					</div>
 					<br>
 					<hr>
-					<br>
 				</div>
 			{% endfor %}
-		{% else %}
-			<h2 class='unavailable'>No menu is available for this restaurant!</h2>
 		{% endif %}
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-		<script src="/static/catalogTweaker.js" type="text/javascript"></script>
+	{% else %}
+		<h2 class='unavailable'>No menu is available for this restaurant!</h2>
+	{% endif %}
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script src="/static/catalogTweaker.js" type="text/javascript"></script>
 {% endblock %}
