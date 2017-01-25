@@ -1,7 +1,13 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session as login_session, make_response
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Restaurant, MenuItem
+import random, string
+from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
+import httplib2
+import json
+import requests
+from gconnect import gconnect, gdisconnect
 
 app = Flask(__name__)
 
@@ -10,12 +16,23 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+# Client ID: 361791903681-kdk05q35lqdrsq996clbi1g4lhl8v6pn.apps.googleusercontent.com
+# Client secret: eya2Op5nmrHq59cGtnzxMTLM
+
 
 @app.route('/')
 @app.route('/restaurants/')
 def restaurants():
 	restaurants = session.query(Restaurant).all()
 	return render_template('restaurants.html', restaurants=restaurants)
+
+
+@app.route('/login')
+def show_login():
+	state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+		for x in xrange(32))
+	login_session['state'] = state
+	return render_template('login.html', STATE=state)
 
 
 @app.route('/restaurant/<int:restaurant_id>/')

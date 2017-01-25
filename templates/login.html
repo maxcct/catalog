@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Login</title>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='styles.css')}}">
+		<link class="font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+		<script src="//apis.google.com/js/platform.js?onload=start"></script>
+	</head>
+
+	<body>
+		<h2 id='homepage'><a href="/">H O M E</a></h2>
+
+        <div id="signInButton">
+        	<span class="g-signin"
+	            data-scope="openid email"
+	            data-clientid="361791903681-kdk05q35lqdrsq996clbi1g4lhl8v6pn.apps.googleusercontent.com"
+	            data-redirecturi="postmessage"
+	            data-accesstype="offline"
+	            data-cookiepolicy="single_host_origin"
+	            data-callback="signInCallback"
+	            data-approvalprompt="force">
+        	</span>
+        </div>
+        <div id='result'></div>
+        <script>
+        	function signInCallback(authResult) {
+        		if (authResult['code']) {
+        			$('#signInButton').attr('style', 'display: none');
+        			$.ajax({
+        				type: 'POST',
+        				url: '/gconnect?state={{STATE}}',
+        				processData: false,
+        				data: authResult['code'],
+        				contentType: 'application/octet-stream; charset=utf-8',
+        				success: function(result) {
+        					if (result) {
+        						$('#result').html('Login successful!<br>' + result + '<br>Redirecting...')
+        						setTimeout(function() {
+        							window.location.href = "/restaurant";
+        						}, 4000);
+        					}
+        					else if (authResult['error']) {
+        						console.log('There was an error: ' + authResult['error']);
+        					}
+        					else {
+        						$('#result').html('Failed to make a server side call. Check your configuration and console.');
+        					}
+        				}
+        			});
+        		}
+        	}
+        </script>
+	</body>
+</html>
