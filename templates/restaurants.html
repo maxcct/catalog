@@ -10,8 +10,10 @@
 			{% endif %}
 		{% endwith %}
 		<br>
-		<hr>
-		<a id='create-new' href="{{url_for('new_restaurant')}}"><p>C R E A T E</p><p>N E W</p><p>R E S T A U R A N T</p></a>
+		{% if user_id %}
+			<hr>
+			<a id='create-new' href="{{url_for('new_restaurant')}}"><p>C R E A T E</p><p>N E W</p><p>R E S T A U R A N T</p></a>
+		{% endif %}
 		<hr>
 		<br>
 		{% if restaurants|length > 0 %}
@@ -22,12 +24,15 @@
 					{% endfilter %}
 					<br>
 					<div id='inline-buttons'>
-						<a class='edit-menu-delete small-button' href="{{url_for('edit_restaurant', restaurant_id=r.id)}}">E D I T</a>
+						{% if user_id == r.user_id %}
+							<a class='edit-menu-delete small-button' href="{{url_for('edit_restaurant', restaurant_id=r.id)}}">E D I T</a>
+						{% endif %}
 						<a class='edit-menu-delete' href="{{url_for('restaurant_menu', restaurant_id=r.id)}}">M E N U</a>
-						<a class='edit-menu-delete small-button' href="{{url_for('delete_restaurant', restaurant_id=r.id)}}">D E L E T E</a>
+						{% if user_id == r.user_id %}
+							<a class='edit-menu-delete small-button' href="{{url_for('delete_restaurant', restaurant_id=r.id)}}">D E L E T E</a>
+						{% endif %}
 					</div>
 					<hr>
-					<br>
 				</div>
 			{% endfor %}
 		{% else %}

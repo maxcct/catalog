@@ -11,8 +11,18 @@
 	</head>
 
 	<body>
-		<h2 id='homepage'><a href="/">H O M E</a></h2>
-		<div id="content">
+		<div id='header-nav'>
+			<div class='header-nav-buttons'>
+				<h3><a href="/login">LOG IN</a></h2>
+			</div class='header-nav-buttons'>
+			<div class='header-nav-buttons'>
+				<h3><a href="/">HOME</a></h2>
+			</div>
+			<div class='header-nav-buttons'>
+				<h3><a id='logout-button' href="/logout">LOG OUT</a></h2>
+			</div>
+		</div>
+		<div id='content'>
 			{% block content %}
 			{% endblock %}
 		</div>
