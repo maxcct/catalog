@@ -27,7 +27,7 @@
 			<div id='google-sign-in'>
 				<span class="g-signin"
 					data-scope="openid email"
-					data-clientid="361791903681-kdk05q35lqdrsq996clbi1g4lhl8v6pn.apps.googleusercontent.com"
+					data-clientid="857563560577-2f14p81j1lkt1g4hd7bpae9qo5p5o91k.apps.googleusercontent.com"
 					data-redirecturi="postmessage"
 					data-accesstype="offline"
 					data-cookiepolicy="single_host_origin"
@@ -52,7 +52,10 @@
 							success: function(result) {
 							// Handle or verify the server response if necessary.
 								if (result) {
-									$('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
+									$('#google-sign-in-text').hide();
+									$('#google-sign-in').hide();
+									$('#facebook-sign-in').hide();
+									$('#result').html('<br>Login Successful!<br>'+ result + '<br><br>Redirecting...')
 									setTimeout(function() {
 										window.location.href = "/restaurants";
 										}, 4000);
@@ -72,7 +75,7 @@
 			<script>
 				window.fbAsyncInit = function() {
 					FB.init({
-					appId      : '689210571239467',
+					appId      : '1283801511688989',
 					cookie     : true,  // enable cookies to allow server to access the session 
 					xfbml      : true,  // parse social plugins on this page
 					version    : 'v2.2' // use version 2.2
@@ -104,7 +107,9 @@
 								// Handle or verify the server response if necessary.
 								if (result) {
 									$('#google-sign-in-text').hide();
-									$('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
+									$('#google-sign-in').hide();
+									$('#facebook-sign-in').hide();
+									$('#result').html('<br>Login Successful!<br>'+ result + '<br><br>Redirecting...')
 									setTimeout(function() {
 									window.location.href = "/restaurants";
 									}, 4000);

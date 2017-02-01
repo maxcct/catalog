@@ -16,8 +16,8 @@ class User(Base):
 	picture = Column(String(250))
 
 
-class Restaurant(Base):
-	__tablename__ = 'restaurant'
+class Category(Base):
+	__tablename__ = 'category'
 
 	id = Column(Integer, primary_key=True)
 	name = Column(String(250), nullable=False)
@@ -32,16 +32,17 @@ class Restaurant(Base):
 		}
 
 
-class MenuItem(Base):
-	__tablename__ = 'menu_item'
+class NGO(Base):
+	__tablename__ = 'ngo'
 
 	id = Column(Integer, primary_key=True)
 	name = Column(String(80), nullable=False)
-	description = Column(String(250))
-	price = Column(String(8))
-	course = Column(String(250))
-	restaurant_id = Column(Integer, ForeignKey('restaurant.id'))
-	restaurant = relationship(Restaurant)
+	focus = Column(String(250))
+	founded = Column(String(80))
+	website = Column(String(250))
+	continent = Column(String(80), nullable=False)
+	category_id = Column(Integer, ForeignKey('restaurant.id'))
+	category = relationship(Restaurant)
 	user_id = Column(Integer, ForeignKey('user.id'))
 	user = relationship(User)
 
@@ -50,12 +51,13 @@ class MenuItem(Base):
 		return {
 			'id' : self.id,
 			'name' : self.name,
-			'description' : self.description,
-			'price' : self.price,
-			'course' : self.course,
-			'restaurant' : self.restaurant.name
+			'focus' : self.focus,
+			'founded' : self.founded,
+			'website' : self.website,
+			'continent' : self.continent,
+			'category' : self.category.name
 		}
 
 
-engine = create_engine('sqlite:///restaurantmenuwithusers.db')
+engine = create_engine('sqlite:///ngosandusers.db')
 Base.metadata.create_all(engine)

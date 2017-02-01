@@ -1,37 +1,36 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session as login_session, make_response
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, User, Restaurant, MenuItem
+from database_setup import Base, User, Category, NGO
 import random, string
 from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
 import httplib2
 import json
 import requests
-# from gconnect import gconnect, gdisconnect
 
 app = Flask(__name__)
 
-engine = create_engine('sqlite:///restaurantmenuwithusers.db')
+engine = create_engine('sqlite:///ngosandusers.db')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-# Client ID: 361791903681-kdk05q35lqdrsq996clbi1g4lhl8v6pn.apps.googleusercontent.com
-# Client secret: eya2Op5nmrHq59cGtnzxMTLM
+# Client ID: 857563560577-2f14p81j1lkt1g4hd7bpae9qo5p5o91k.apps.googleusercontent.com
+# Client secret: 1htnymAZ_fXaOso5MKvxydlj
 CLIENT_ID = json.loads(
-	open('client_secrets.json', 'r').read())['web']['client_id']
-APPLICATION_NAME = "Restaurant Menu App"
+	open('g_client_secrets.json', 'r').read())['web']['client_id']
+APPLICATION_NAME = "NGO Emporium"
 
 
 @app.route('/')
-@app.route('/restaurants/')
-def restaurants():
+@app.route('/categories/')
+def categories():
 	try:
 		user_id = login_session['user_id']
 	except:
 		user_id = None
-	restaurants = session.query(Restaurant).all()
-	return render_template('restaurants.html', restaurants=restaurants,
+	categories = session.query(Category).all()
+	return render_template('categories.html', categories=categories,
 						   user_id=user_id)
 
 
@@ -49,7 +48,6 @@ def logout():
 		if login_session['provider'] == 'google':
 			gdisconnect()
 			del login_session['gplus_id']
-			del login_session['credentials']
 		if login_session['provider'] == 'facebook':
 			fbdisconnect()
 			del login_session['facebook_id']
@@ -59,10 +57,10 @@ def logout():
 		del login_session['user_id']
 		del login_session['provider']
 		flash("You have logged out successfully")
-		return redirect('/restaurants')
+		return redirect('/categories')
 	else:
 		flash("You were not logged in")
-		return redirect('/restaurants')
+		return redirect('/categories')
 
 
 @app.route('/fbconnect', methods=['POST'])
@@ -151,7 +149,7 @@ def gconnect():
 
 	try:
 		# Upgrade the authorization code into a credentials object
-		oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+		oauth_flow = flow_from_clientsecrets('g_client_secrets.json', scope='')
 		oauth_flow.redirect_uri = 'postmessage'
 		credentials = oauth_flow.step2_exchange(code)
 	except FlowExchangeError:
@@ -252,188 +250,198 @@ def gdisconnect():
 		return response
 
 
-@app.route('/restaurant/<int:restaurant_id>/')
-@app.route('/restaurant/<int:restaurant_id>/menu/')
-def restaurant_menu(restaurant_id):
-	restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
-	owner = get_user_info(restaurant.user_id)
+@app.route('/<category>/<int:category_id>/')
+@app.route('/<category>/<int:category_id>/ngos/')
+def show_ngos(category_id):
+	category = session.query(Category).filter_by(id=category_id).one()
+	admin = get_user_info(category.user_id)
 	try:
-		if owner.id == login_session['user_id']:
+		if admin.id == login_session['user_id']:
 			show_restricted = True
 		else:
 			show_restricted = False
 	except:
 		show_restricted = False
-	items = session.query(MenuItem).filter_by(restaurant_id=restaurant.id).all()
-	starters = [i for i in items if i.course == 'Starter' or
-				i.course == 'Appetizer']
-	mains = [i for i in items if i.course == 'Main' or
-			 i.course == 'Main Course' or i.course == 'Entree']
-	desserts = [i for i in items if i.course == 'Dessert']
-	drinks = [i for i in items if i.course == 'Drink' or i.course == 'Beverage']
-	return render_template('menu.html', restaurant=restaurant, items=items,
-						   starters=starters, mains=mains, desserts=desserts,
-						   drinks=drinks, owner=owner,
-						   show_restricted=show_restricted)
+	ngos = session.query(NGO).filter_by(category_id=category.id).all()
+	africa = [n for n in ngos if n.continent == 'Africa']
+	asia = [n for n in ngos if n.continent == 'Asia']
+	antarctica = [n for n in ngos if n.continent == 'Antarctica']
+	australia = [n for n in ngos if n.continent == 'Australia']
+	europe = [n for n in ngos if n.continent == 'Europe']
+	north_america = [n for n in ngos if n.continent == 'North America']
+	south_america = [n for n in ngos if n.continent == 'South America']
+	worldwide = [n for n in ngos if n.continent == 'Worldwide']
+	return render_template('ngos.html', category=category, ngos=ngos,
+							africa=africa, asia=asia, antarctica=antarctica,
+						    australia=australia, europe=europe,
+						    north_america=north_america,
+						    south_america=south_america, worldwide=worldwide,
+						    show_restricted=show_restricted)
 
 
-@app.route('/restaurant/<int:restaurant_id>/menu/new/', methods=['GET', 'POST'])
-def new_menu_item(restaurant_id):
-	restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+@app.route('/<category>/<int:category_id>/ngo/new/', methods=['GET', 'POST'])
+def new_ngo(category_id):
+	category = session.query(Category).filter_by(id=category_id).one()
 	if login_session['user_id']:
-		if restaurant.user_id != login_session['user_id']:
-			flash("Only the owner of this restaurant can add menu items!")
-			return redirect('/restaurants')
+		if category.user_id != login_session['user_id']:
+			flash("Only the admin of this category can add NGOs!")
+			return redirect('/categories')
 	else:
-		flash("You must be logged in to add menu items!")
+		flash("You must be logged in to add NGOs!")
 		return redirect('/login')
 	if request.method == 'POST':
-		new_item = MenuItem(name=request.form['name'],
-							description=request.form['description'],
-							price=request.form['price'],
-							course=request.form['course'],
-							restaurant_id=restaurant_id,
-							user_id=restaurant.user_id)
+		new_item = NGO(name=request.form['name'],
+					   focus=request.form['focus'],
+					   founded=request.form['founded'],
+					   website=request.form['website'],
+					   continent=request.form['continent'],
+					   category_id=category.id,
+					   user_id=category.user_id)
 		session.add(new_item)
 		flash("New menu item successfully created!")
 		session.commit()
-		return redirect(url_for('restaurant_menu',
-								restaurant_id=restaurant_id))
+		return redirect(url_for('show_ngos', category=category.name,
+								category_id=category_id))
 	else:
-		return render_template('newmenuitem.html', restaurant_id=restaurant_id)
+		return render_template('newngo.html', category=category.name,
+								category_id=category_id)
 
 
-@app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/edit/',
+@app.route('/<category>/<int:category_id>/ngo/<int:ngo_id>/edit/',
 		   methods=['GET', 'POST'])
-def edit_menu_item(restaurant_id, menu_id):
-	restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+def edit_ngo(category_id, ngo_id):
+	category = session.query(Category).filter_by(id=category_id).one()
 	if login_session['user_id']:
-		if restaurant.user_id != login_session['user_id']:
-			flash("Only the owner of this restaurant can edit menu items!")
-			return redirect('/restaurants')
+		if category.user_id != login_session['user_id']:
+			flash("Only the admin of this category can edit NGOs!")
+			return redirect('/categories')
 	else:
-		flash("You must be logged in to edit menu items!")
+		flash("You must be logged in to edit NGOs!")
 		return redirect('/login')
-	item_to_edit = session.query(MenuItem).filter_by(id=menu_id).one()
+	ngo_to_edit = session.query(NGO).filter_by(id=ngo_id).one()
 	if request.method == 'POST':
-		if request.form['name'] != item_to_edit.name:
-			item_to_edit.name = request.form['name']
-		if request.form['description'] != item_to_edit.description:
-			item_to_edit.description = request.form['description']
-		if request.form['price'] != item_to_edit.price:
-			item_to_edit.price = request.form['price']
-		if request.form['course'] != item_to_edit.course:
-			item_to_edit.course = request.form['course']
-		session.add(item_to_edit)
+		if request.form['name'] != ngo_to_edit.name:
+			ngo_to_edit.name = request.form['name']
+		if request.form['focus'] != ngo_to_edit.description:
+			ngo_to_edit.description = request.form['description']
+		if request.form['founded'] != ngo_to_edit.price:
+			ngo_to_edit.price = request.form['price']
+		if request.form['website'] != ngo_to_edit.course:
+			ngo_to_edit.course = request.form['course']
+		if request.form['continent'] != ngo_to_edit.continent:
+			ngo_to_edit.continent = request.form['continent']
+		session.add(ngo_to_edit)
 		session.commit()		
 		flash("Menu item successfully edited!")
-		return redirect(url_for('restaurant_menu',
-								restaurant_id=restaurant_id))
+		return redirect(url_for('show_ngos', category=category.name,
+								category_id=category_id))
 	else:
-		return render_template('editmenuitem.html', item=item_to_edit,
-							   restaurant_id=restaurant_id, menu_id=menu_id)
+		return render_template('editngo.html', category=category.name,
+							   ngo=ngo_to_edit, category_id=category_id,
+							   ngo_id=ngo_id)
 
 
-@app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/delete/',
+@app.route('/<category>/<int:category_id>/ngo/<int:ngo_id>/delete/',
 		   methods=['GET', 'POST'])
-def delete_menu_item(restaurant_id, menu_id):
-	restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+def delete_menu_item(category_id, ngo_id):
+	category = session.query(Category).filter_by(id=category_id).one()
 	if login_session['user_id']:
-		if restaurant.user_id != login_session['user_id']:
-			flash("Only the owner of this restaurant can delete menu items!")
-			return redirect('/restaurants')
+		if category.user_id != login_session['user_id']:
+			flash("Only the owner of this category can delete NGOs!")
+			return redirect('/categories')
 	else:
-		flash("You must be logged in to delete menu items!")
+		flash("You must be logged in to delete NGOs!")
 		return redirect('/login')
-	item_to_delete = session.query(MenuItem).filter_by(id=menu_id).one()
+	ngo_to_delete = session.query(NGO).filter_by(id=ngo_id).one()
 	if request.method == 'POST':
-		session.delete(item_to_delete)
+		session.delete(ngo_to_delete)
 		session.commit()		
-		flash("Menu item successfully deleted!")
-		return redirect(url_for('restaurant_menu',
-								restaurant_id=restaurant_id))
+		flash("NGO successfully deleted!")
+		return redirect(url_for('show_ngos', category=category.name,
+								category_id=category_id))
 	else:
-		return render_template('deletemenuitem.html', item=item_to_delete,
-							   restaurant_id=restaurant_id, menu_id=menu_id)
+		return render_template('deletengo.html', category=category.name,
+							   ngo=ngo_to_delete, category_id=category_id,
+							   ngo_id=ngo_id)
 
 
-@app.route('/restaurant/new/', methods=['GET', 'POST'])
-def new_restaurant():
+@app.route('/category/new/', methods=['GET', 'POST'])
+def new_category():
 	if 'username' not in login_session:
-		flash("You must be logged in to create new restaurants!")
+		flash("You must be logged in to create new categories!")
 		return redirect('/login')
 	if request.method == 'POST':
-		new_rstrt = Restaurant(name=request.form['name'],
+		new_rstrt = Category(name=request.form['name'],
 							   user_id=login_session['user_id'])
 		session.add(new_rstrt)
-		flash("New restaurant successfully created!")
+		flash("New category successfully created!")
 		session.commit()
-		return redirect('/restaurants')
+		return redirect('/categories')
 	else:
-		return render_template('newrestaurant.html')
+		return render_template('newcategory.html')
 
 
-@app.route('/restaurant/<int:restaurant_id>/edit/',
+@app.route('/category/<int:category_id>/edit/',
 		   methods=['GET', 'POST'])
-def edit_restaurant(restaurant_id):
-	rstrt_to_edit = session.query(Restaurant).filter_by(id=restaurant_id).one()
+def edit_category(category_id):
+	rstrt_to_edit = session.query(Category).filter_by(id=category_id).one()
 	if login_session['user_id']:
 		if rstrt_to_edit.user_id != login_session['user_id']:
-			flash("Only the owner of this restaurant can add edit it!")
-			return redirect('/restaurants')
+			flash("Only the owner of this category can add edit it!")
+			return redirect('/categories')
 	else:
-		flash("You must be logged in to edit restaurants!")
+		flash("You must be logged in to edit categories!")
 		return redirect('/login')
 	if request.method == 'POST':
 		if request.form['name']:
 			rstrt.name = request.form['name']
 		session.add(rstrt_to_edit)
 		session.commit()		
-		flash("Restaurant successfully edited!")
-		return redirect('/restaurants')
+		flash("Category successfully edited!")
+		return redirect('/categories')
 	else:
-		return render_template('editrestaurant.html', r=rstrt_to_edit,
-							   restaurant_id=restaurant_id)
+		return render_template('editcategory.html', r=rstrt_to_edit,
+							   category_id=category_id)
 
 
-@app.route('/restaurant/<int:restaurant_id>/delete/',
+@app.route('/category/<int:category_id>/delete/',
 		   methods=['GET', 'POST'])
-def delete_restaurant(restaurant_id):
-	rstrt_to_delete = session.query(Restaurant).filter_by(id=restaurant_id).one()
+def delete_category(category_id):
+	rstrt_to_delete = session.query(Category).filter_by(id=category_id).one()
 	if login_session['user_id']:
 		if rstrt_to_delete.user_id != login_session['user_id']:
-			flash("Only the owner of this restaurant can delete it!")
-			return redirect('/restaurants')
+			flash("Only the owner of this category can delete it!")
+			return redirect('/categories')
 	else:
-		flash("You must be logged in to delete restaurants!")
+		flash("You must be logged in to delete categories!")
 		return redirect('/login')
 	if request.method == 'POST':
 		session.delete(rstrt_to_delete)
 		session.commit()		
-		flash("Restaurant successfully deleted!")
-		return redirect('/restaurants')
+		flash("Category successfully deleted!")
+		return redirect('/categories')
 	else:
-		return render_template('deleterestaurant.html', r=rstrt_to_delete,
-							   restaurant_id=restaurant_id)
+		return render_template('deletecategory.html', r=rstrt_to_delete,
+							   category_id=category_id)
 
 
-@app.route('/restaurants/JSON')
-def restaurants_JSON():
-	restaurants = session.query(Restaurant).all()
-	return jsonify(Restaurants=[r.serialise for r in restaurants])
+@app.route('/categories/JSON')
+def categories_JSON():
+	categories = session.query(Category).all()
+	return jsonify(Categorys=[r.serialise for r in categories])
 
 
-@app.route('/restaurant/<int:restaurant_id>/menu/JSON')
-def restaurant_menu_JSON(restaurant_id):
-	restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
-	items = session.query(MenuItem).filter_by(restaurant_id=restaurant.id).all()
-	return jsonify(MenuItems=[i.serialise for i in items])
+@app.route('/category/<int:category_id>/menu/JSON')
+def category_menu_JSON(category_id):
+	category = session.query(Category).filter_by(id=category_id).one()
+	items = session.query(NGO).filter_by(category_id=category.id).all()
+	return jsonify(NGOs=[i.serialise for i in items])
 
 
-@app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/JSON')
-def menu_item_JSON(restaurant_id, menu_id):
-	item = session.query(MenuItem).filter_by(id=menu_id).one()
-	return jsonify(MenuItem=item.serialise)
+@app.route('/category/<int:category_id>/menu/<int:ngo_id>/JSON')
+def menu_item_JSON(category_id, ngo_id):
+	item = session.query(NGO).filter_by(id=ngo_id).one()
+	return jsonify(NGO=item.serialise)
 
 
 def create_user(login_session):
