@@ -48,6 +48,7 @@ def logout():
 		if login_session['provider'] == 'google':
 			gdisconnect()
 			del login_session['gplus_id']
+			del login_session['access_token']
 		if login_session['provider'] == 'facebook':
 			fbdisconnect()
 			del login_session['facebook_id']
@@ -250,9 +251,9 @@ def gdisconnect():
 		return response
 
 
-@app.route('/<category>/<int:category_id>/')
-@app.route('/<category>/<int:category_id>/ngos/')
-def show_ngos(category_id):
+@app.route('/<category_name>/<int:category_id>/')
+@app.route('/<category_name>/<int:category_id>/ngos/')
+def show_ngos(category_name, category_id):
 	category = session.query(Category).filter_by(id=category_id).one()
 	admin = get_user_info(category.user_id)
 	try:
@@ -264,23 +265,36 @@ def show_ngos(category_id):
 		show_restricted = False
 	ngos = session.query(NGO).filter_by(category_id=category.id).all()
 	africa = [n for n in ngos if n.continent == 'Africa']
-	asia = [n for n in ngos if n.continent == 'Asia']
 	antarctica = [n for n in ngos if n.continent == 'Antarctica']
+	asia = [n for n in ngos if n.continent == 'Asia']
 	australia = [n for n in ngos if n.continent == 'Australia']
 	europe = [n for n in ngos if n.continent == 'Europe']
 	north_america = [n for n in ngos if n.continent == 'North America']
 	south_america = [n for n in ngos if n.continent == 'South America']
 	worldwide = [n for n in ngos if n.continent == 'Worldwide']
-	return render_template('ngos.html', category=category, ngos=ngos,
-							africa=africa, asia=asia, antarctica=antarctica,
-						    australia=australia, europe=europe,
-						    north_america=north_america,
-						    south_america=south_america, worldwide=worldwide,
-						    show_restricted=show_restricted)
+	return render_template('ngos.html', category_name=category_name,
+						   category_id=category_id, admin=admin, ngos=ngos,
+						   africa=africa, antarctica=antarctica, asia=asia,
+						   australia=australia, europe=europe,
+						   north_america=north_america,
+						   south_america=south_america, worldwide=worldwide,
+						   show_restricted=show_restricted)
 
 
-@app.route('/<category>/<int:category_id>/ngo/new/', methods=['GET', 'POST'])
-def new_ngo(category_id):
+@app.route('/ngos/')
+@app.route('/ngos/all/')
+def show_all_ngos():
+	try:
+		user_id = login_session['user_id']
+	except:
+		user_id = None
+	ngos = session.query(NGO).all()
+	return render_template('allngos.html', ngos=ngos,
+						   user_id=user_id)
+
+
+@app.route('/<category_name>/<int:category_id>/ngo/new/', methods=['GET', 'POST'])
+def new_ngo(category_name, category_id):
 	category = session.query(Category).filter_by(id=category_id).one()
 	if login_session['user_id']:
 		if category.user_id != login_session['user_id']:
@@ -298,18 +312,18 @@ def new_ngo(category_id):
 					   category_id=category.id,
 					   user_id=category.user_id)
 		session.add(new_item)
-		flash("New menu item successfully created!")
+		flash("New NGO successfully created!")
 		session.commit()
-		return redirect(url_for('show_ngos', category=category.name,
+		return redirect(url_for('show_ngos', category_name=category_name,
 								category_id=category_id))
 	else:
-		return render_template('newngo.html', category=category.name,
+		return render_template('newngo.html', category_name=category_name,
 								category_id=category_id)
 
 
-@app.route('/<category>/<int:category_id>/ngo/<int:ngo_id>/edit/',
+@app.route('/<category_name>/<int:category_id>/ngo/<int:ngo_id>/edit/',
 		   methods=['GET', 'POST'])
-def edit_ngo(category_id, ngo_id):
+def edit_ngo(category_name, category_id, ngo_id):
 	category = session.query(Category).filter_by(id=category_id).one()
 	if login_session['user_id']:
 		if category.user_id != login_session['user_id']:
@@ -322,28 +336,28 @@ def edit_ngo(category_id, ngo_id):
 	if request.method == 'POST':
 		if request.form['name'] != ngo_to_edit.name:
 			ngo_to_edit.name = request.form['name']
-		if request.form['focus'] != ngo_to_edit.description:
-			ngo_to_edit.description = request.form['description']
-		if request.form['founded'] != ngo_to_edit.price:
-			ngo_to_edit.price = request.form['price']
-		if request.form['website'] != ngo_to_edit.course:
-			ngo_to_edit.course = request.form['course']
+		if request.form['focus'] != ngo_to_edit.focus:
+			ngo_to_edit.focus = request.form['focus']
+		if request.form['founded'] != ngo_to_edit.founded:
+			ngo_to_edit.founded = request.form['founded']
+		if request.form['website'] != ngo_to_edit.website:
+			ngo_to_edit.website = request.form['website']
 		if request.form['continent'] != ngo_to_edit.continent:
 			ngo_to_edit.continent = request.form['continent']
 		session.add(ngo_to_edit)
 		session.commit()		
-		flash("Menu item successfully edited!")
-		return redirect(url_for('show_ngos', category=category.name,
+		flash("NGO successfully edited!")
+		return redirect(url_for('show_ngos', category_name=category_name,
 								category_id=category_id))
 	else:
-		return render_template('editngo.html', category=category.name,
+		return render_template('editngo.html', category_name=category_name,
 							   ngo=ngo_to_edit, category_id=category_id,
 							   ngo_id=ngo_id)
 
 
-@app.route('/<category>/<int:category_id>/ngo/<int:ngo_id>/delete/',
+@app.route('/<category_name>/<int:category_id>/ngo/<int:ngo_id>/delete/',
 		   methods=['GET', 'POST'])
-def delete_menu_item(category_id, ngo_id):
+def delete_ngo(category_name, category_id, ngo_id):
 	category = session.query(Category).filter_by(id=category_id).one()
 	if login_session['user_id']:
 		if category.user_id != login_session['user_id']:
@@ -357,23 +371,23 @@ def delete_menu_item(category_id, ngo_id):
 		session.delete(ngo_to_delete)
 		session.commit()		
 		flash("NGO successfully deleted!")
-		return redirect(url_for('show_ngos', category=category.name,
+		return redirect(url_for('show_ngos', category_name=category_name,
 								category_id=category_id))
 	else:
-		return render_template('deletengo.html', category=category.name,
+		return render_template('deletengo.html', category_name=category_name,
 							   ngo=ngo_to_delete, category_id=category_id,
 							   ngo_id=ngo_id)
 
 
-@app.route('/category/new/', methods=['GET', 'POST'])
+@app.route('/categories/new/', methods=['GET', 'POST'])
 def new_category():
 	if 'username' not in login_session:
 		flash("You must be logged in to create new categories!")
 		return redirect('/login')
 	if request.method == 'POST':
-		new_rstrt = Category(name=request.form['name'],
+		new_category = Category(name=request.form['name'],
 							   user_id=login_session['user_id'])
-		session.add(new_rstrt)
+		session.add(new_category)
 		flash("New category successfully created!")
 		session.commit()
 		return redirect('/categories')
@@ -381,12 +395,12 @@ def new_category():
 		return render_template('newcategory.html')
 
 
-@app.route('/category/<int:category_id>/edit/',
+@app.route('/<category_name>/<int:category_id>/edit/',
 		   methods=['GET', 'POST'])
-def edit_category(category_id):
-	rstrt_to_edit = session.query(Category).filter_by(id=category_id).one()
+def edit_category(category_name, category_id):
+	ctgry_to_edit = session.query(Category).filter_by(id=category_id).one()
 	if login_session['user_id']:
-		if rstrt_to_edit.user_id != login_session['user_id']:
+		if ctgry_to_edit.user_id != login_session['user_id']:
 			flash("Only the owner of this category can add edit it!")
 			return redirect('/categories')
 	else:
@@ -394,54 +408,60 @@ def edit_category(category_id):
 		return redirect('/login')
 	if request.method == 'POST':
 		if request.form['name']:
-			rstrt.name = request.form['name']
-		session.add(rstrt_to_edit)
+			ctgry_to_edit.name = request.form['name']
+		session.add(ctgry_to_edit)
 		session.commit()		
 		flash("Category successfully edited!")
 		return redirect('/categories')
 	else:
-		return render_template('editcategory.html', r=rstrt_to_edit,
-							   category_id=category_id)
+		return render_template('editcategory.html', category_name=category_name,
+							   c=ctgry_to_edit, category_id=category_id)
 
 
-@app.route('/category/<int:category_id>/delete/',
+@app.route('/<category_name>/<int:category_id>/delete/',
 		   methods=['GET', 'POST'])
-def delete_category(category_id):
-	rstrt_to_delete = session.query(Category).filter_by(id=category_id).one()
+def delete_category(category_name, category_id):
+	ctgry_to_delete = session.query(Category).filter_by(id=category_id).one()
 	if login_session['user_id']:
-		if rstrt_to_delete.user_id != login_session['user_id']:
+		if ctgry_to_delete.user_id != login_session['user_id']:
 			flash("Only the owner of this category can delete it!")
 			return redirect('/categories')
 	else:
 		flash("You must be logged in to delete categories!")
 		return redirect('/login')
 	if request.method == 'POST':
-		session.delete(rstrt_to_delete)
+		session.delete(ctgry_to_delete)
 		session.commit()		
 		flash("Category successfully deleted!")
 		return redirect('/categories')
 	else:
-		return render_template('deletecategory.html', r=rstrt_to_delete,
-							   category_id=category_id)
+		return render_template('deletecategory.html', category_name=category_name,
+							   category_id=category_id, c=ctgry_to_delete)
 
 
 @app.route('/categories/JSON')
 def categories_JSON():
 	categories = session.query(Category).all()
-	return jsonify(Categorys=[r.serialise for r in categories])
+	return jsonify(Categories=[c.serialise for c in categories])
 
 
-@app.route('/category/<int:category_id>/menu/JSON')
-def category_menu_JSON(category_id):
+@app.route('/categories/ngos/JSON')
+def ngos_JSON():
+	ngos = session.query(NGO).all()
+	return jsonify(NGOs=[n.serialise for n in ngos])
+
+
+@app.route('/<category_name>/<int:category_id>/ngos/JSON')
+def ngos_by_category_JSON(category_id):
 	category = session.query(Category).filter_by(id=category_id).one()
-	items = session.query(NGO).filter_by(category_id=category.id).all()
-	return jsonify(NGOs=[i.serialise for i in items])
+	ngos = session.query(NGO).filter_by(category_id=category.id).all()
+	return jsonify(NGOs=[n.serialise for n in ngos])
 
 
-@app.route('/category/<int:category_id>/menu/<int:ngo_id>/JSON')
-def menu_item_JSON(category_id, ngo_id):
-	item = session.query(NGO).filter_by(id=ngo_id).one()
-	return jsonify(NGO=item.serialise)
+@app.route('/<category_name>/<int:category_id>/<ngo_name>/<int:ngo_id>/JSON')
+def ngo_JSON(ngo_id):
+	ngo = session.query(NGO).filter_by(id=ngo_id).one()
+	return jsonify(NGO=ngo.serialise)
 
 
 def create_user(login_session):

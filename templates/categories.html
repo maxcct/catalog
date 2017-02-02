@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
 
-		<h1>R E S T A U R A N T S</h1>
+		<h1>C A T E G O R I E S</h1>
 		{% with messages = get_flashed_messages() %}
 			{% if messages %}
 				{% for message in messages %}
+					<br>
 					<p class='home-flash'>{{message}}</p>
 				{% endfor %}
 			{% endif %}
@@ -12,31 +13,31 @@
 		<br>
 		{% if user_id %}
 			<hr>
-			<a id='create-new' href="{{url_for('new_restaurant')}}"><p>C R E A T E</p><p>N E W</p><p>R E S T A U R A N T</p></a>
+			<a id='create-new' href="{{url_for('new_category')}}"><p>C R E A T E</p><p>N E W</p><p>C A T E G O R Y</p></a>
 		{% endif %}
 		<hr>
 		<br>
-		{% if restaurants|length > 0 %}
-			{% for r in restaurants %}
+		{% if categories|length > 0 %}
+			{% for c in categories %}
 				<div class='expand-text'>
 					{% filter upper %}
-						<h3>{{r.name}}</h3>
+						<h3>{{c.name}}</h3>
 					{% endfilter %}
 					<br>
-					<div id='inline-buttons'>
-						{% if user_id == r.user_id %}
-							<a class='edit-menu-delete small-button' href="{{url_for('edit_restaurant', restaurant_id=r.id)}}">E D I T</a>
+					<div class='home-inline-buttons'>
+						{% if user_id == c.user_id %}
+							<a class='edit-ngos-delete small-button' href="{{url_for('edit_category', category_name=c.name, category_id=c.id)}}">E D I T</a>
 						{% endif %}
-						<a class='edit-menu-delete' href="{{url_for('restaurant_menu', restaurant_id=r.id)}}">M E N U</a>
-						{% if user_id == r.user_id %}
-							<a class='edit-menu-delete small-button' href="{{url_for('delete_restaurant', restaurant_id=r.id)}}">D E L E T E</a>
+							<a class='edit-ngos-delete' href="{{url_for('show_ngos', category_name=c.name, category_id=c.id)}}">N G O s</a>
+						{% if user_id == c.user_id %}
+							<a class='edit-ngos-delete small-button' href="{{url_for('delete_category', category_name=c.name, category_id=c.id)}}">D E L E T E</a>
 						{% endif %}
 					</div>
 					<hr>
 				</div>
 			{% endfor %}
 		{% else %}
-			<h2 class='unavailable'>No menu is available for this restaurant!</h2>
+			<h2 class='unavailable'>No categories are available!</h2>
 		{% endif %}
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 		<script src="/static/catalogTweaker.js" type="text/javascript"></script>

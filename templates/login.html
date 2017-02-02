@@ -57,7 +57,7 @@
 									$('#facebook-sign-in').hide();
 									$('#result').html('<br>Login Successful!<br>'+ result + '<br><br>Redirecting...')
 									setTimeout(function() {
-										window.location.href = "/restaurants";
+										window.location.href = "/categories";
 										}, 4000);
 								} 
 								else if (authResult['error']) {
@@ -105,13 +105,10 @@
 							contentType: 'application/octet-stream; charset=utf-8',
 							success: function(result) {
 								// Handle or verify the server response if necessary.
-								if (result) {
-									$('#google-sign-in-text').hide();
-									$('#google-sign-in').hide();
-									$('#facebook-sign-in').hide();
+								if (result) {					
 									$('#result').html('<br>Login Successful!<br>'+ result + '<br><br>Redirecting...')
 									setTimeout(function() {
-									window.location.href = "/restaurants";
+									window.location.href = "/categories";
 									}, 4000);
 								}
 								else {
@@ -120,6 +117,9 @@
 							}
 					  
 						});
+						$('#google-sign-in-text').hide();
+						$('#google-sign-in').hide();
+						$('#facebook-sign-in').hide();
 					});
 				}
 			</script>

@@ -4,11 +4,20 @@ $(document).ready(function() {
 	}, function() {
 		$(this).animate({fontSize: '1em'}, 800);
 	});
-	$('.menu-expand-text:last-of-type').append(owner);
+	$('.ngo-focus').hover(function() {
+		$(this).animate({fontSize: '1.2em'}, 200);
+	}, function() {
+		$(this).animate({fontSize: '1em'}, 800);
+	});
+	if (window.location.href.indexOf('ngos')) {
+		$('.continent-expand-text:last-of-type').append(admin);
+	}
 });
 
-var owner = "<div id='proprietor'><h2>The proprietor of this establishment is "
-owner += owner_name
-owner += "</h2><img src="
-owner += owner_picture
-owner += "></div><br><br>"
+if (window.location.href.indexOf('ngos')) {
+	var admin = "<div id='admin'><h2>The administrator of this category is "
+	admin += admin_name
+	admin += "</h2><img src="
+	admin += admin_picture
+	admin += "></div><br><br>"
+};
