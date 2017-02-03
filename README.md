@@ -1,7 +1,6 @@
 # NGO Emporium
 Web application and database for categorising and displaying information about NGOs
-
-## TOURNAMENT SIMULATOR SET-UP                        
+                      
 1. Go to [udacity.atlassian.net/wiki/display/BENDH/Vagrant+VM+Installation](udacity.atlassian.net/wiki/display/BENDH/Vagrant+VM+Installation)
 
 2. Follow the instructions for setting up Git (if applicable), VirtualBox and Vagrant
