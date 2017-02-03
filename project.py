@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session as login_session, make_response
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session as login_session, make_response, g
+from functools import wraps
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, User, Category, NGO
@@ -35,6 +36,16 @@ def categories():
 	categories = session.query(Category).all()
 	return render_template('categories.html', categories=categories,
 						   user_id=user_id)
+
+
+def login_required(f):
+    @wraps(f)
+    def protected_function(*args, **kwargs):
+        if 'user_id' in login_session:
+        	return f(*args, **kwargs)
+        flash("You must be logged in to access that page!")
+        return redirect('/login')
+    return protected_function
 
 
 @app.route('/login')
@@ -316,18 +327,15 @@ def show_all_ngos():
 
 @app.route('/<category_name>/<int:category_id>/ngo/new/',
 		   methods=['GET', 'POST'])
+@login_required
 def new_ngo(category_name, category_id):
 	"""
 	Displays page for creating a new NGO
 	"""
 	category = session.query(Category).filter_by(id=category_id).one()
-	if login_session['user_id']:
-		if category.user_id != login_session['user_id']:
-			flash("Only the admin of this category can add NGOs!")
-			return redirect('/categories')
-	else:
-		flash("You must be logged in to add NGOs!")
-		return redirect('/login')
+	if category.user_id != login_session['user_id']:
+		flash("Only the admin of this category can add NGOs to it!")
+		return redirect('/categories')
 	if request.method == 'POST':
 		new_item = NGO(name=request.form['name'],
 					   focus=request.form['focus'],
@@ -349,18 +357,15 @@ def new_ngo(category_name, category_id):
 
 @app.route('/<category_name>/<int:category_id>/ngo/<int:ngo_id>/edit/',
 		   methods=['GET', 'POST'])
+@login_required
 def edit_ngo(category_name, category_id, ngo_id):
 	"""
 	Displays page for editing an NGO
 	"""
 	category = session.query(Category).filter_by(id=category_id).one()
-	if login_session['user_id']:
-		if category.user_id != login_session['user_id']:
-			flash("Only the admin of this category can edit NGOs!")
-			return redirect('/categories')
-	else:
-		flash("You must be logged in to edit NGOs!")
-		return redirect('/login')
+	if category.user_id != login_session['user_id']:
+		flash("Only the admin of this category can edit its NGOs!")
+		return redirect('/categories')
 	ngo_to_edit = session.query(NGO).filter_by(id=ngo_id).one()
 	if request.method == 'POST':
 		if request.form['name'] != ngo_to_edit.name:
@@ -388,18 +393,15 @@ def edit_ngo(category_name, category_id, ngo_id):
 
 @app.route('/<category_name>/<int:category_id>/ngo/<int:ngo_id>/delete/',
 		   methods=['GET', 'POST'])
+@login_required
 def delete_ngo(category_name, category_id, ngo_id):
 	"""
 	Displays page for deleting an NGO
 	"""
 	category = session.query(Category).filter_by(id=category_id).one()
-	if login_session['user_id']:
-		if category.user_id != login_session['user_id']:
-			flash("Only the owner of this category can delete NGOs!")
-			return redirect('/categories')
-	else:
-		flash("You must be logged in to delete NGOs!")
-		return redirect('/login')
+	if category.user_id != login_session['user_id']:
+		flash("Only the admin of this category can delete its NGOs!")
+		return redirect('/categories')
 	ngo_to_delete = session.query(NGO).filter_by(id=ngo_id).one()
 	if request.method == 'POST':
 		session.delete(ngo_to_delete)
@@ -414,13 +416,11 @@ def delete_ngo(category_name, category_id, ngo_id):
 
 
 @app.route('/categories/new/', methods=['GET', 'POST'])
+@login_required
 def new_category():
 	"""
 	Displays page for creating an new category
 	"""
-	if 'username' not in login_session:
-		flash("You must be logged in to create new categories!")
-		return redirect('/login')
 	if request.method == 'POST':
 		new_category = Category(name=request.form['name'],
 							   user_id=login_session['user_id'])
@@ -434,18 +434,15 @@ def new_category():
 
 @app.route('/<category_name>/<int:category_id>/edit/',
 		   methods=['GET', 'POST'])
+@login_required
 def edit_category(category_name, category_id):
 	"""
 	Displays page for editing a category
 	"""
 	ctgry_to_edit = session.query(Category).filter_by(id=category_id).one()
-	if login_session['user_id']:
-		if ctgry_to_edit.user_id != login_session['user_id']:
-			flash("Only the owner of this category can add edit it!")
-			return redirect('/categories')
-	else:
-		flash("You must be logged in to edit categories!")
-		return redirect('/login')
+	if ctgry_to_edit.user_id != login_session['user_id']:
+		flash("Only the admin of this category can add edit it!")
+		return redirect('/categories')
 	if request.method == 'POST':
 		if request.form['name']:
 			ctgry_to_edit.name = request.form['name']
@@ -461,18 +458,15 @@ def edit_category(category_name, category_id):
 
 @app.route('/<category_name>/<int:category_id>/delete/',
 		   methods=['GET', 'POST'])
+@login_required
 def delete_category(category_name, category_id):
 	"""
 	Displays page for deleting a category
 	"""
 	ctgry_to_delete = session.query(Category).filter_by(id=category_id).one()
-	if login_session['user_id']:
-		if ctgry_to_delete.user_id != login_session['user_id']:
-			flash("Only the owner of this category can delete it!")
-			return redirect('/categories')
-	else:
-		flash("You must be logged in to delete categories!")
-		return redirect('/login')
+	if ctgry_to_delete.user_id != login_session['user_id']:
+		flash("Only the admin of this category can delete it!")
+		return redirect('/categories')
 	if request.method == 'POST':
 		session.delete(ctgry_to_delete)
 		session.commit()		
