@@ -10,7 +10,7 @@ import requests
 from flask.ext.seasurf import SeaSurf
 
 app = Flask(__name__)
-csrf = SeaSurf(app)
+csrf = SeaSurf(app) # Protects CRUD operations against CSRF attacks
 
 engine = create_engine('sqlite:///ngosandusers.db')
 Base.metadata.bind = engine
@@ -25,6 +25,9 @@ APPLICATION_NAME = "NGO Emporium"
 @app.route('/')
 @app.route('/categories/')
 def categories():
+	"""
+	Displays a page listing all categories
+	"""
 	try:
 		user_id = login_session['user_id']
 	except:
@@ -36,6 +39,10 @@ def categories():
 
 @app.route('/login')
 def login():
+	"""
+	Displays log-in page, and generates a random 32 character string for
+	authentication purposes
+	"""
 	state = ''.join(random.choice(string.ascii_uppercase + string.digits)
 		for x in xrange(32))
 	login_session['state'] = state
@@ -44,6 +51,9 @@ def login():
 
 @app.route('/logout')
 def logout():
+	"""
+	Logs the current user out and wipes the login_session dictionary
+	"""
 	if 'provider' in login_session:
 		if login_session['provider'] == 'google':
 			gdisconnect()
@@ -140,6 +150,7 @@ def fbdisconnect():
 	return "You have been logged out"
 
 
+@csrf.exempt
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
 	# Validate state token
@@ -230,11 +241,12 @@ def gconnect():
 	print "Done!"
 	return output
 
-	
-# DISCONNECT - Revoke a current user's token and reset their login_session
+
 @app.route('/gdisconnect')
 def gdisconnect():
-	# Only disconnect a connected user.
+	"""
+	Revokes a current user's token
+	"""
 	credentials = login_session.get('credentials')
 	if credentials is None:
 		response = make_response(
@@ -256,6 +268,10 @@ def gdisconnect():
 @app.route('/<category_name>/<int:category_id>/')
 @app.route('/<category_name>/<int:category_id>/ngos/')
 def show_ngos(category_name, category_id):
+	"""
+	Displays a page listing all NGOs in a given category. Groups the NGOs by
+	continent so that NGOs from the same continent can be displayed together.
+	"""
 	category = session.query(Category).filter_by(id=category_id).one()
 	admin = get_user_info(category.user_id)
 	try:
@@ -286,6 +302,9 @@ def show_ngos(category_name, category_id):
 @app.route('/ngos/')
 @app.route('/ngos/all/')
 def show_all_ngos():
+	"""
+	Displays a page listing all NGOs
+	"""
 	try:
 		user_id = login_session['user_id']
 	except:
@@ -295,8 +314,12 @@ def show_all_ngos():
 						   user_id=user_id)
 
 
-@app.route('/<category_name>/<int:category_id>/ngo/new/', methods=['GET', 'POST'])
+@app.route('/<category_name>/<int:category_id>/ngo/new/',
+		   methods=['GET', 'POST'])
 def new_ngo(category_name, category_id):
+	"""
+	Displays page for creating a new NGO
+	"""
 	category = session.query(Category).filter_by(id=category_id).one()
 	if login_session['user_id']:
 		if category.user_id != login_session['user_id']:
@@ -327,6 +350,9 @@ def new_ngo(category_name, category_id):
 @app.route('/<category_name>/<int:category_id>/ngo/<int:ngo_id>/edit/',
 		   methods=['GET', 'POST'])
 def edit_ngo(category_name, category_id, ngo_id):
+	"""
+	Displays page for editing an NGO
+	"""
 	category = session.query(Category).filter_by(id=category_id).one()
 	if login_session['user_id']:
 		if category.user_id != login_session['user_id']:
@@ -363,6 +389,9 @@ def edit_ngo(category_name, category_id, ngo_id):
 @app.route('/<category_name>/<int:category_id>/ngo/<int:ngo_id>/delete/',
 		   methods=['GET', 'POST'])
 def delete_ngo(category_name, category_id, ngo_id):
+	"""
+	Displays page for deleting an NGO
+	"""
 	category = session.query(Category).filter_by(id=category_id).one()
 	if login_session['user_id']:
 		if category.user_id != login_session['user_id']:
@@ -386,6 +415,9 @@ def delete_ngo(category_name, category_id, ngo_id):
 
 @app.route('/categories/new/', methods=['GET', 'POST'])
 def new_category():
+	"""
+	Displays page for creating an new category
+	"""
 	if 'username' not in login_session:
 		flash("You must be logged in to create new categories!")
 		return redirect('/login')
@@ -403,6 +435,9 @@ def new_category():
 @app.route('/<category_name>/<int:category_id>/edit/',
 		   methods=['GET', 'POST'])
 def edit_category(category_name, category_id):
+	"""
+	Displays page for editing a category
+	"""
 	ctgry_to_edit = session.query(Category).filter_by(id=category_id).one()
 	if login_session['user_id']:
 		if ctgry_to_edit.user_id != login_session['user_id']:
@@ -419,13 +454,17 @@ def edit_category(category_name, category_id):
 		flash("Category successfully edited!")
 		return redirect('/categories')
 	else:
-		return render_template('editcategory.html', category_name=category_name,
+		return render_template('editcategory.html',
+							   category_name=category_name,
 							   c=ctgry_to_edit, category_id=category_id)
 
 
 @app.route('/<category_name>/<int:category_id>/delete/',
 		   methods=['GET', 'POST'])
 def delete_category(category_name, category_id):
+	"""
+	Displays page for deleting a category
+	"""
 	ctgry_to_delete = session.query(Category).filter_by(id=category_id).one()
 	if login_session['user_id']:
 		if ctgry_to_delete.user_id != login_session['user_id']:
@@ -440,24 +479,34 @@ def delete_category(category_name, category_id):
 		flash("Category successfully deleted!")
 		return redirect('/categories')
 	else:
-		return render_template('deletecategory.html', category_name=category_name,
+		return render_template('deletecategory.html',
+							   category_name=category_name,
 							   category_id=category_id, c=ctgry_to_delete)
 
 
 @app.route('/categories/JSON')
 def categories_JSON():
+	"""
+	JSON endpoint for all categories
+	"""
 	categories = session.query(Category).all()
 	return jsonify(Categories=[c.serialise for c in categories])
 
 
 @app.route('/categories/ngos/JSON')
 def ngos_JSON():
+	"""
+	JSON endpoint for all ngos
+	"""
 	ngos = session.query(NGO).all()
 	return jsonify(NGOs=[n.serialise for n in ngos])
 
 
 @app.route('/<category_name>/<int:category_id>/ngos/JSON')
 def ngos_by_category_JSON(category_name, category_id):
+	"""
+	JSON endpoint for all ngos in a given category
+	"""
 	category = session.query(Category).filter_by(id=category_id).one()
 	ngos = session.query(NGO).filter_by(category_id=category.id).all()
 	return jsonify(NGOs=[n.serialise for n in ngos])
@@ -465,11 +514,18 @@ def ngos_by_category_JSON(category_name, category_id):
 
 @app.route('/<category_name>/<int:category_id>/<ngo_name>/<int:ngo_id>/JSON')
 def ngo_JSON(category_name, category_id, ngo_name, ngo_id):
+	"""
+	JSON endpoint for an individual NGO
+	"""
 	ngo = session.query(NGO).filter_by(id=ngo_id).one()
 	return jsonify(NGO=ngo.serialise)
 
 
 def create_user(login_session):
+	"""
+	Creates new user in database if a user is logging in for the first time.
+	Returns id of the new user entry.
+	"""
 	new_user = User(name=login_session['username'],
 					email=login_session['email'],
 					picture=login_session['picture'])
@@ -480,11 +536,18 @@ def create_user(login_session):
 
 
 def get_user_info(user_id):
+	"""
+	Takes a user id as arg and returns complete user object.
+	"""
 	user = session.query(User).filter_by(id=user_id).one()
 	return user
 
 
 def get_user_id(email):
+	"""
+	Takes email address as arg and returns id of corresponding user if they
+	exist; otherwise returns None
+	"""
 	try:
 		user = session.query(User).filter_by(email=email).one()
 		return user.id

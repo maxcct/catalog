@@ -1,8 +1,8 @@
 $(document).ready(function() {
 	$('a').hover(function() {
-		$(this).animate({fontSize: '1.5em'}, 800);
+		$(this).animate({fontSize: '1.3em'}, 800);
 	}, function() {
-		$(this).animate({fontSize: '1em'}, 1200);
+		$(this).animate({fontSize: '1em'}, 1000);
 	});
 	if (window.location.href.indexOf('ngos')) {
 		$('.continent-expand-text:last-of-type').append(admin);
