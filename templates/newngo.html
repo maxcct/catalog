@@ -4,6 +4,7 @@
 		<h1>ADD NEW NGO</h1>
 
 		<form action="{{url_for('new_ngo', category_name=category_name, category_id=category_id)}}" method='POST'>
+			<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
 			<label>
 				<p>N A M E</p>
 				<br>
@@ -27,7 +28,14 @@
 				<br>
 				<input type='text' size='50' name='website'>
 			</label>
-			<br>			
+			<br>
+			<label>
+				<p>L O G O</p>
+				<p>(full URL)</p>
+				<br>
+				<input type='text' size='50' name='logo'>
+			</label>
+			<br>		
 			<p id='label'>C O N T I N E N T</p>
 			<select id='continent-selectors' name='continent'>
 				<option value="Africa">Africa</option>
@@ -38,24 +46,7 @@
 				<option value="North America">North America</option>
 				<option value="South America">South America</option>
 				<option value="Worldwide">Worldwide</option>
-			</select>
-			<!--
-			<label><input type="radio" name="continent" value="Africa">A F R I C A</label>
-			<br><br>
-			<label><input type="radio" name="continent" value="Antarctica">A N T A R T I C A</label>
-			<br><br>
-			<label><input type="radio" name="continent" value="Asia">A S I A</label>
-			<br><br>			
-			<label><input type="radio" name="continent" value="Australia">A U S T R A L I A</label>
-			<br><br>
-			<label><input type="radio" name="continent" value="Europe">E U R O P E</label>
-			<br><br>
-			<label><input type="radio" name="continent" value="North America">N O R T H  A M E R I C A</label>
-			<br><br>
-			<label><input type="radio" name="continent" value="South America">S O U T H  A M E R I C A</label>
-			<br><br>
-			<label><input type="radio" name="continent" value="Worldwide">W O R L D W I D E</label>
-			-->					
+			</select>				
 			<br><br><br>
 			<div class='confirm-cancel'>
 				<input class='button' type='submit' value='C R E A T E'>

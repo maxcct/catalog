@@ -4,6 +4,7 @@
 		<h1>EDIT {{ngo.name}}</h1>
 
 		<form action="{{url_for('edit_ngo', category_name=category_name, category_id=category_id, ngo_id=ngo.id)}}" method='POST'>
+			<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
 			<label>
 				<p>N A M E</p>
 				<br>
@@ -28,6 +29,12 @@
 				<br>
 				<input type='text' size='30' name='website' value='{{ngo.website}}'>
 				<br>
+			</label>
+			<br>
+			<label>
+				<p>L O G O</p>
+				<br>
+				<input type='text' size='50' name='logo' value='{{ngo.logo}}'>
 			</label>
 			<br>
 			<p id='label'>C O N T I N E N T</p>

@@ -4,6 +4,7 @@
 		<h1>NEW CATEGORY</h1>
 
 		<form action="{{url_for('new_category')}}" method='POST'>
+			<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
 			<label>
 				<p>N A M E</p>
 				<br>

@@ -41,6 +41,7 @@ class NGO(Base):
 	founded = Column(String(80))
 	website = Column(String(250))
 	continent = Column(String(80), nullable=False)
+	logo = Column(String(250))
 	category_id = Column(Integer, ForeignKey('category.id'))
 	category = relationship(Category)
 	user_id = Column(Integer, ForeignKey('user.id'))
@@ -55,6 +56,7 @@ class NGO(Base):
 			'founded' : self.founded,
 			'website' : self.website,
 			'continent' : self.continent,
+			'logo' : self.logo,
 			'category' : self.category.name
 		}
 

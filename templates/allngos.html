@@ -2,25 +2,23 @@
 {% block content %}
 
 		<h1>N G O s</h1>
-		<hr>
 		<br>
+		<hr>
 		{% if ngos|length > 0 %}
 			{% for ngo in ngos %}
 				<div class='expand-text'>
-					{% filter upper %}
-						<h3>{{ngo.name}}</h3>
-					{% endfilter %}
+					<img class='all-ngos-logo' src={{ngo.logo}} alt='logo'>
+						<h3><a class='all-ngos-name' href="{{url_for('show_ngos', category_name=ngo.category.name, category_id=ngo.category_id)}}">{% filter upper %}{{ngo.name}}{% endfilter %}</a></h3>
 					<br>
-					<div class='home-inline-buttons'>
+					<div class='all-ngos-inline-buttons'>
 						{% if user_id == ngo.user_id %}
 							<a class='edit-ngos-delete small-button' href="{{url_for('edit_ngo', category_name=ngo.category.name, category_id=ngo.category_id, ngo_id=ngo.id)}}">E D I T</a>
 						{% endif %}
-							<a class='edit-ngos-delete' href="{{url_for('show_ngos', category_name=ngo.category.name, category_id=ngo.category_id)}}">P A G E</a>
 						{% if user_id == ngo.user_id %}
 							<a class='edit-ngos-delete small-button' href="{{url_for('delete_ngo', category_name=ngo.category.name, category_id=ngo.category_id, ngo_id=ngo.id)}}">D E L E T E</a>
 						{% endif %}
 					</div>
-					<hr>
+					<hr class='all-ngos-hr'>
 				</div>
 			{% endfor %}
 		{% else %}

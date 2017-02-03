@@ -4,6 +4,7 @@
 		<h1>Are you sure you want to delete {{c.name}}?</h1>
 
 		<form action="{{url_for('delete_category', category_name=c.name, category_id=c.id)}}" method='post'>
+			<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
 			<div class='confirm-cancel'>
 				<input class='button' type='submit', value='D E L E T E'>
 				<a class='button' id='cancel' href="/categories">C A N C E L</a>

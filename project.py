@@ -7,16 +7,16 @@ from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
 import httplib2
 import json
 import requests
+from flask.ext.seasurf import SeaSurf
 
 app = Flask(__name__)
+csrf = SeaSurf(app)
 
 engine = create_engine('sqlite:///ngosandusers.db')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-# Client ID: 857563560577-2f14p81j1lkt1g4hd7bpae9qo5p5o91k.apps.googleusercontent.com
-# Client secret: 1htnymAZ_fXaOso5MKvxydlj
 CLIENT_ID = json.loads(
 	open('g_client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "NGO Emporium"
@@ -57,6 +57,7 @@ def logout():
 		del login_session['picture']
 		del login_session['user_id']
 		del login_session['provider']
+		del login_session['_csrf_token']
 		flash("You have logged out successfully")
 		return redirect('/categories')
 	else:
@@ -308,6 +309,7 @@ def new_ngo(category_name, category_id):
 					   focus=request.form['focus'],
 					   founded=request.form['founded'],
 					   website=request.form['website'],
+					   logo=request.form['logo'],
 					   continent=request.form['continent'],
 					   category_id=category.id,
 					   user_id=category.user_id)
@@ -342,10 +344,12 @@ def edit_ngo(category_name, category_id, ngo_id):
 			ngo_to_edit.founded = request.form['founded']
 		if request.form['website'] != ngo_to_edit.website:
 			ngo_to_edit.website = request.form['website']
+		if request.form['logo'] != ngo_to_edit.logo:
+			ngo_to_edit.logo = request.form['logo']
 		if request.form['continent'] != ngo_to_edit.continent:
 			ngo_to_edit.continent = request.form['continent']
 		session.add(ngo_to_edit)
-		session.commit()		
+		session.commit()
 		flash("NGO successfully edited!")
 		return redirect(url_for('show_ngos', category_name=category_name,
 								category_id=category_id))
