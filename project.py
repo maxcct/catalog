@@ -457,14 +457,14 @@ def ngos_JSON():
 
 
 @app.route('/<category_name>/<int:category_id>/ngos/JSON')
-def ngos_by_category_JSON(category_id):
+def ngos_by_category_JSON(category_name, category_id):
 	category = session.query(Category).filter_by(id=category_id).one()
 	ngos = session.query(NGO).filter_by(category_id=category.id).all()
 	return jsonify(NGOs=[n.serialise for n in ngos])
 
 
 @app.route('/<category_name>/<int:category_id>/<ngo_name>/<int:ngo_id>/JSON')
-def ngo_JSON(ngo_id):
+def ngo_JSON(category_name, category_id, ngo_name, ngo_id):
 	ngo = session.query(NGO).filter_by(id=ngo_id).one()
 	return jsonify(NGO=ngo.serialise)
 
