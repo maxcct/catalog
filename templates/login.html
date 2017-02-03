@@ -124,15 +124,15 @@
 				}
 			</script>
 
-			<p id='google-sign-in-text'>WITH A GOOGLE ACCOUNT, OR</p>
+			<p id='google-sign-in-text'>WITH A GOOGLE ACCOUNT, OR LOG IN WITH</p>
 			<br>
 			<button id='facebook-sign-in'>
 				<fb:login-button scope="public_profile,email" onlogin="sendTokenToServer();">
-					<a href='javascript:sendTokenToServer()'>Login with Facebook</a>
+					<a href='javascript:sendTokenToServer()'>Facebook</a>
 				</fb:login-button>
 			</button>
 		</div>
-		<form method="POST">
+		<form id='hidden' method="POST">
     		<input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
 		</form>
 	</body>

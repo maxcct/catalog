@@ -65,6 +65,7 @@ def logout():
 		return redirect('/categories')
 
 
+@csrf.exempt
 @app.route('/fbconnect', methods=['POST'])
 def fbconnect():
 	if request.args.get('state') != login_session['state']:
