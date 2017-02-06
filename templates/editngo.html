@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-		<h1>EDIT {{ngo.name}}</h1>
+		<h1>Edit {{ngo.name}}</h1>
 
 		<form action="{{url_for('edit_ngo', category_name=category_name, category_id=category_id, ngo_id=ngo.id)}}" method='POST'>
 			<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">

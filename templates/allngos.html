@@ -8,7 +8,7 @@
 			{% for ngo in ngos %}
 				<div class='expand-text'>
 					<img class='all-ngos-logo' src={{ngo.logo}} alt='logo'>
-						<h3><a class='all-ngos-name' href="{{url_for('show_ngos', category_name=ngo.category.name, category_id=ngo.category_id)}}">{% filter upper %}{{ngo.name}}{% endfilter %}</a></h3>
+						<h3><a class='all-ngos-name' href="/{{ngo.category.name}}/{{ngo.category_id}}/ngos/#{{ngo.name|replace(' ', '-')}}">{% filter upper %}{{ngo.name}}{% endfilter %}</a></h3>
 					<br>
 					<div class='all-ngos-inline-buttons'>
 						{% if user_id == ngo.user_id %}

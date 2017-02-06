@@ -28,9 +28,13 @@
 							<strong><p class='ngo-name'>{{ngo.name}}</p><p>FOUNDED:</p><p>{{ngo.founded}}</p></strong>
 						</div>
 						<br>
-						<p class='ngo-focus'>{{ngo.focus}}</p>
+						<p class='ngo-focus' id="{{ngo.name|replace(' ', '-')}}">
+							{% if ngos|length > 0 %}
+								{{ngo.focus}}
+							{% endif %}
+						</p>
 						<br>
-						<a class='ngo-link' href="http://{{ngo.website}}"><div class='ngo-link'>{{ngo.website}}</div></a>
+						<a class='ngo-link' id="{{ngo.name|replace(' ', '-')}}" href="http://{{ngo.website}}"><div class='ngo-link'>{{ngo.website}}</div></a>
 						{% if show_restricted %}
 							<div class='inline-buttons'>
 								<a class='edit' href="{{url_for('edit_ngo', category_name=category_name, category_id=category_id, ngo_id=ngo.id)}}">EDIT</a>
@@ -52,9 +56,13 @@
 							<strong><p class='ngo-name'>{{ngo.name}}</p><p>FOUNDED:</p><p>{{ngo.founded}}</p></strong>
 						</div>
 						<br>
-						<p class='ngo-focus'>{{ngo.focus}}</p>
+						<p class='ngo-focus' id="{{ngo.name|replace(' ', '-')}}">
+							{% if ngos|length > 0 %}
+								{{ngo.focus}}
+							{% endif %}
+						</p>
 						<br>
-						<a class='ngo-link' href="http://{{ngo.website}}"><div class='ngo-link'>{{ngo.website}}</div></a>
+						<a class='ngo-link' id="{{ngo.name|replace(' ', '-')}}" href="http://{{ngo.website}}"><div class='ngo-link'>{{ngo.website}}</div></a>
 						{% if show_restricted %}
 							<div class='inline-buttons'>
 								<a class='edit' href="{{url_for('edit_ngo', category_name=category_name, category_id=category_id, ngo_id=ngo.id)}}">EDIT</a>
@@ -76,9 +84,13 @@
 							<strong><p class='ngo-name'>{{ngo.name}}</p><p>FOUNDED:</p><p>{{ngo.founded}}</p></strong>
 						</div>
 						<br>
-						<p class='ngo-focus'>{{ngo.focus}}</p>
+						<p class='ngo-focus' id="{{ngo.name|replace(' ', '-')}}">
+							{% if ngos|length > 0 %}
+								{{ngo.focus}}
+							{% endif %}
+						</p>
 						<br>
-						<a class='ngo-link' href="http://{{ngo.website}}"><div class='ngo-link'>{{ngo.website}}</div></a>
+						<a class='ngo-link' id="{{ngo.name|replace(' ', '-')}}" href="http://{{ngo.website}}"><div class='ngo-link'>{{ngo.website}}</div></a>
 						{% if show_restricted %}
 							<div class='inline-buttons'>
 								<a class='edit' href="{{url_for('edit_ngo', category_name=category_name, category_id=category_id, ngo_id=ngo.id)}}">EDIT</a>
@@ -100,9 +112,13 @@
 							<strong><p class='ngo-name'>{{ngo.name}}</p><p>FOUNDED:</p><p>{{ngo.founded}}</p></strong>
 						</div>
 						<br>
-						<p class='ngo-focus'>{{ngo.focus}}</p>
+						<p class='ngo-focus' id="{{ngo.name|replace(' ', '-')}}">
+							{% if ngos|length > 0 %}
+								{{ngo.focus}}
+							{% endif %}
+						</p>
 						<br>
-						<a class='ngo-link' href="http://{{ngo.website}}"><div class='ngo-link'>{{ngo.website}}</div></a>
+						<a class='ngo-link' id="{{ngo.name|replace(' ', '-')}}" href="http://{{ngo.website}}"><div class='ngo-link'>{{ngo.website}}</div></a>
 						{% if show_restricted %}
 							<div class='inline-buttons'>
 								<a class='edit' href="{{url_for('edit_ngo', category_name=category_name, category_id=category_id, ngo_id=ngo.id)}}">EDIT</a>
@@ -124,9 +140,13 @@
 							<strong><p class='ngo-name'>{{ngo.name}}</p><p>FOUNDED:</p><p>{{ngo.founded}}</p></strong>
 						</div>
 						<br>
-						<p class='ngo-focus'>{{ngo.focus}}</p>
+						<p class='ngo-focus' id="{{ngo.name|replace(' ', '-')}}">
+							{% if ngos|length > 0 %}
+								{{ngo.focus}}
+							{% endif %}
+						</p>
 						<br>
-						<a class='ngo-link' href="http://{{ngo.website}}"><div class='ngo-link'>{{ngo.website}}</div></a>
+						<a class='ngo-link' id="{{ngo.name|replace(' ', '-')}}" href="http://{{ngo.website}}"><div class='ngo-link'>{{ngo.website}}</div></a>
 						{% if show_restricted %}
 							<div class='inline-buttons'>
 								<a class='edit' href="{{url_for('edit_ngo', category_name=category_name, category_id=category_id, ngo_id=ngo.id)}}">EDIT</a>
@@ -148,9 +168,13 @@
 							<strong><p class='ngo-name'>{{ngo.name}}</p><p>FOUNDED:</p><p>{{ngo.founded}}</p></strong>
 						</div>
 						<br>
-						<p class='ngo-focus'>{{ngo.focus}}</p>
+						<p class='ngo-focus' id="{{ngo.name|replace(' ', '-')}}">
+							{% if ngos|length > 0 %}
+								{{ngo.focus}}
+							{% endif %}
+						</p>
 						<br>
-						<a class='ngo-link' href="http://{{ngo.website}}"><div class='ngo-link'>{{ngo.website}}</div></a>
+						<a class='ngo-link' id="{{ngo.name|replace(' ', '-')}}" href="http://{{ngo.website}}"><div class='ngo-link'>{{ngo.website}}</div></a>
 						{% if show_restricted %}
 							<div class='inline-buttons'>
 								<a class='edit' href="{{url_for('edit_ngo', category_name=category_name, category_id=category_id, ngo_id=ngo.id)}}">EDIT</a>
@@ -172,9 +196,13 @@
 							<strong><p class='ngo-name'>{{ngo.name}}</p><p>FOUNDED:</p><p>{{ngo.founded}}</p></strong>
 						</div>
 						<br>
-						<p class='ngo-focus'>{{ngo.focus}}</p>
+						<p class='ngo-focus' id="{{ngo.name|replace(' ', '-')}}">
+							{% if ngos|length > 0 %}
+								{{ngo.focus}}
+							{% endif %}
+						</p>
 						<br>
-						<a class='ngo-link' href="http://{{ngo.website}}"><div class='ngo-link'>{{ngo.website}}</div></a>
+						<a class='ngo-link' id="{{ngo.name|replace(' ', '-')}}" href="http://{{ngo.website}}"><div class='ngo-link'>{{ngo.website}}</div></a>
 						{% if show_restricted %}
 							<div class='inline-buttons'>
 								<a class='edit' href="{{url_for('edit_ngo', category_name=category_name, category_id=category_id, ngo_id=ngo.id)}}">EDIT</a>
@@ -196,9 +224,13 @@
 							<strong><p class='ngo-name'>{{ngo.name}}</p><p>FOUNDED:</p><p>{{ngo.founded}}</p></strong>
 						</div>
 						<br>
-						<p class='ngo-focus'>{{ngo.focus}}</p>
+						<p class='ngo-focus' id="{{ngo.name|replace(' ', '-')}}">
+							{% if ngos|length > 0 %}
+								{{ngo.focus}}
+							{% endif %}
+						</p>
 						<br>
-						<a class='ngo-link' href="http://{{ngo.website}}"><div class='ngo-link'>{{ngo.website}}</div></a>
+						<a class='ngo-link' id="{{ngo.name|replace(' ', '-')}}" href="http://{{ngo.website}}"><div class='ngo-link'>{{ngo.website}}</div></a>
 						{% if show_restricted %}
 							<div class='inline-buttons'>
 								<a class='edit' href="{{url_for('edit_ngo', category_name=category_name, category_id=category_id, ngo_id=ngo.id)}}">EDIT</a>
@@ -216,15 +248,9 @@
 			<h2 class='unavailable'>There are no NGOs in this category</h2>
 		{% endif %}
 	</div>
-	<script type="text/javascript">
-		var admin = "<div id='admin'><h2>The administrator of this category is "
-		admin += admin_name
-		admin += "</h2><img src="
-		admin += admin_picture
-		admin += "></div><br><br><br>"
-		var admin_name = "{{admin.name}}"
-		var admin_picture = "{{admin.picture}}"
+	<p id='admin-name'>{{admin.name}}</p>
+	<p id='admin-picture'>{{admin.picture}}</p>
 	</script>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-	<script src="/static/catalogTweaker.js" type="text/javascript"></script>
+	<script src="/static/ngos.js" type="text/javascript"></script>
 {% endblock %}

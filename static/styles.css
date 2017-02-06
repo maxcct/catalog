@@ -443,3 +443,12 @@ input[type="radio"] {
 #hidden {
 	display: none;
 }
+
+.new-ngo-property {
+	display: block;
+	margin-bottom: -30px;
+}
+
+#admin-name, #admin-picture {
+	display: none;
+}
