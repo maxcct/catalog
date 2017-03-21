@@ -14,16 +14,16 @@
 		<div id='header-nav'>
 			<div class='header-nav-buttons'>
 				{% if 'username' not in session %}
-					<h3><a href="/login">LOG IN</a></h2>
+					<h3><a href="/login">LOG IN</a></h3>
 				{% else %}
-					<h3><a id='logout-button' href="/logout">LOG OUT</a></h2>
+					<h3><a id='logout-button' href="/logout">LOG OUT</a></h3>
 				{% endif %}
-			</div class='header-nav-buttons'>
-			<div class='header-nav-buttons'>
-				<h3><a href="/">HOME</a></h2>
 			</div>
 			<div class='header-nav-buttons'>
-				<h3><a id='all-ngos-button' href="/ngos/all/">ALL NGOs</a></h2>
+				<h3><a href="/">HOME</a></h3>
+			</div>
+			<div class='header-nav-buttons'>
+				<h3><a id='all-ngos-button' href="/ngos/all/">ALL NGOs</a></h3>
 			</div>
 		</div>
 		<div id='content'>
